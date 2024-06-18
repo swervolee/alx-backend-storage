@@ -1,4 +1,4 @@
 // user or change db
 
 
-user my_db
+use my_db
