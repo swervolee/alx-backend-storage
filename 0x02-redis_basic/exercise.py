@@ -24,6 +24,27 @@ def count_calls(method: Callable) -> Callable:
     return incr
 
 
+def call_history(method: Callable):
+    """
+    Decorator
+    """
+    inputs = method.__qualname__ + ":inputs"
+    outputs = method.__qualname__ + ":outputs"
+
+    @wraps(method)
+    def create_history(self, *args, **kwargs):
+        """
+        Decorator
+        """
+        self._redis.rpush(inputs, str(args))
+        result = method(self, *args, **kwargs)
+
+        self._redis.rpush(outputs, result)
+        return result
+
+    return create_history
+
+
 class Cache:
     """
     Redis Cache
@@ -36,6 +57,7 @@ class Cache:
         self._redis.flushdb()
 
     @count_calls
+    @call_history
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """
         Generates a random string and uses
