@@ -74,7 +74,7 @@ def replay(method: Callable) -> None:
         except Exception:
             o = ""
 
-        print("{}(*{})-> {}".format(qualified_name, i, o))
+        print("{}(*{}) -> {}".format(qualified_name, i, o))
 
 
 class Cache:
