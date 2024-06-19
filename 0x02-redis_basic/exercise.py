@@ -5,6 +5,23 @@ Redis
 from typing import Union, Optional, Callable
 import redis
 import uuid
+from functools import wraps
+
+
+def count_calls(method: Callable) -> Callable:
+    """
+    Decorator
+    """
+    key = method.__qualname__
+
+    @wraps(method)
+    def incr(self, *args, **kwargs):
+        """
+        Increments key
+        """
+        self._redis.incr(key)
+        return method(self, *args, **kwargs)
+    return incr
 
 
 class Cache:
@@ -18,6 +35,7 @@ class Cache:
         self._redis = redis.Redis(host="localhost", port=6379, db=0)
         self._redis.flushdb()
 
+    @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """
         Generates a random string and uses
