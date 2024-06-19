@@ -24,7 +24,7 @@ def count_calls(method: Callable) -> Callable:
     return incr
 
 
-def call_history(method: Callable):
+def call_history(method: Callable) -> Callable:
     """
     Decorator
     """
