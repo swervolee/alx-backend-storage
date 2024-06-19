@@ -45,6 +45,38 @@ def call_history(method: Callable) -> Callable:
     return create_history
 
 
+def replay(method: Callable):
+    """
+    Display function input
+    """
+    r = redis.Redis()
+    qualified_name = method.__qualname__
+
+    number_called = 0
+
+    try:
+        number_called = int(r.get(qualified_name))
+    except Exception:
+        pass
+
+    print(f"{qualified_name} was called {number_called} times:")
+
+    inputs = r.lrange(f"{qualified_name}:inputs", 0, -1)
+    outputs = r.lrange(f"{qualified_name}:outputs", 0, -1)
+
+    for i, o in zip(inputs, outputs):
+        try:
+            i = i.decode("utf-8")
+        except Exception:
+            i = ""
+        try:
+            o = o.decode("utf-8")
+        except Exception:
+            o = ""
+
+        print(f"{qualified_name}(*{i})-> {o}")
+
+
 class Cache:
     """
     Redis Cache
