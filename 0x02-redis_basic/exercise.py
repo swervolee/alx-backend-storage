@@ -45,7 +45,7 @@ def call_history(method: Callable) -> Callable:
     return create_history
 
 
-def replay(method: Callable):
+def replay(method: Callable) -> Optional[None]:
     """
     Display function input
     """
