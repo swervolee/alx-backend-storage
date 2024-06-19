@@ -45,7 +45,7 @@ def call_history(method: Callable) -> Callable:
     return create_history
 
 
-def replay(method: Callable) -> Optional[None]:
+def replay(method: Callable) -> None:
     """
     Display function input
     """
@@ -55,14 +55,14 @@ def replay(method: Callable) -> Optional[None]:
     number_called = 0
 
     try:
-        number_called = int(r.get(qualified_name))
+        number_called = int(r.get(qualified_name) or 0)
     except Exception:
         pass
 
-    print(f"{qualified_name} was called {number_called} times:")
+    print("{} was called {} times:".format(qualified_name, number_called))
 
-    inputs = r.lrange(f"{qualified_name}:inputs", 0, -1)
-    outputs = r.lrange(f"{qualified_name}:outputs", 0, -1)
+    inputs = r.lrange("{}:inputs".format(qualified_name), 0, -1)
+    outputs = r.lrange("{}:outputs".format(qualified_name), 0, -1)
 
     for i, o in zip(inputs, outputs):
         try:
@@ -74,7 +74,7 @@ def replay(method: Callable) -> Optional[None]:
         except Exception:
             o = ""
 
-        print(f"{qualified_name}(*{i})-> {o}")
+        print("{}(*{})-> {}".format(qualified_name, i, o))
 
 
 class Cache:
