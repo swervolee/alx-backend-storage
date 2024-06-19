@@ -2,7 +2,7 @@
 """
 Redis
 """
-
+from typing import Union, Callable, Optional
 import redis
 
 
